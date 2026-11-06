@@ -54,7 +54,8 @@ No admin rights needed.
 > **"Windows protected your PC"?** The installer isn't code-signed yet, so Microsoft
 > Defender SmartScreen shows *Unknown publisher* for new downloads. Click
 > **More info → Run anyway** to install. The full source is in this repo and the
-> installer is built from it with `build_installer.bat`.
+> installer is built from it with `build_installer.bat`. See the
+> [Code signing policy](#code-signing-policy).
 
 ## Run from source
 
@@ -90,6 +91,25 @@ The installer is written to `dist\RMDeck-Setup-<version>.exe`.
 | `app_info.py` | App names, publishers and icons read from `.exe` files |
 | `ui_kit.py` | Rounded Tkinter widgets and the app logo |
 | `packaging/` | PyInstaller spec, Inno Setup script, icon/version generator |
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io),
+certificate by [SignPath Foundation](https://signpath.org).
+
+- Committers and reviewers: [Rishvan](https://github.com/Rishvan)
+- Approvers: [Rishvan](https://github.com/Rishvan)
+
+Every release installer is built from this repository by the
+[Build installer](.github/workflows/build.yml) GitHub Actions workflow, and each
+signing request is approved manually.
+
+### Privacy policy
+
+This program will not transfer any information to other networked systems unless
+specifically requested by the user or the person installing or operating it.
+RMDeck only plays audio on the output device you choose; it has no network
+features, telemetry or update checks.
 
 ## License
 
