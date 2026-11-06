@@ -1,5 +1,7 @@
 # RMDex — RV's Mix Deck
 
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-%E2%98%95-FFDD00?style=flat&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/rishvanrv7h)
+
 Send exactly the audio you want from your gaming PC to your streaming PC.
 Pick the apps (the game, Discord, music…), mix them with your microphone, set
 each one's volume, and play the mix out to the device that feeds your stream.
@@ -110,6 +112,12 @@ This program will not transfer any information to other networked systems unless
 specifically requested by the user or the person installing or operating it.
 RMDex only plays audio on the output device you choose; it has no network
 features, telemetry or update checks.
+
+## Support
+
+RMDex is free. If it makes your stream sound better, you can
+[buy me a coffee ☕](https://buymeacoffee.com/rishvanrv7h). In the app, open
+**Settings → Support** (or the tray menu) for a QR code you can scan with your phone.
 
 ## License
 
