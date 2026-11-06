@@ -1,6 +1,6 @@
 """
 RMDeck (RV's Mix Deck) - mix the audio of the apps you pick (plus your mic)
-and listen to it live. Formerly "Capture Monitor".
+and play the mix live on another output, e.g. the one feeding a streaming PC.
 
 Windows 10 2004+ only. Requires: PyAudioWPatch, pycaw, psutil, numpy  (see requirements.txt)
 """

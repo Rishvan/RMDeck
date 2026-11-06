@@ -1,7 +1,37 @@
 # RMDeck — RV's Mix Deck
 
-Pick the apps you want to hear (Discord, Chrome, a game…), mix them with your
-microphone and listen to the result live on any headphones or speakers.
+Send exactly the audio you want from your gaming PC to your streaming PC.
+Pick the apps (the game, Discord, music…), mix them with your microphone, set
+each one's volume, and play the mix out to the device that feeds your stream.
+
+## Main use: two-PC streaming
+
+You game on one PC and stream from another. RMDeck runs on the **gaming PC**
+and controls which sound reaches the **streaming PC**:
+
+```
+Gaming PC                                         Streaming PC
+┌──────────────────────────────┐                  ┌──────────────────┐
+│ Game      ──┐                │                  │                  │
+│ Discord   ──┼─ RMDeck mix ───┼── "Listen on" ──►│  capture card /  │──► OBS ──► stream
+│ Music     ──┤  (per-app vol) │   output device  │  line-in / USB   │
+│ Mic (NS)  ──┘                │                  │  audio interface │
+└──────────────────────────────┘                  └──────────────────┘
+```
+
+1. Add the apps that should be heard on stream and switch them on. Anything
+   you don't add (browser tabs, notifications, private calls) never reaches the stream.
+2. Balance them with each app's own volume slider, e.g. game at 70 %, Discord at 120 %.
+3. Optionally mix in your mic, with **Noise suppression** on to remove fan and room noise.
+4. In **Listen on**, pick the output that goes to the streaming PC: the HDMI/capture-card
+   audio, a line-out cabled to the streaming PC's line-in, or a USB audio interface.
+5. Press **Listen**. On the streaming PC, add that capture/line-in device as an audio
+   source in OBS (or your streaming software).
+
+You keep hearing your full game audio on your own headphones as usual; only the
+RMDeck mix goes to the stream.
+
+It works on a single PC too: pick your headphones in **Listen on** to monitor the mix.
 
 ## Features
 
