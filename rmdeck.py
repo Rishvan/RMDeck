@@ -99,6 +99,16 @@ _k32.WaitForSingleObject.restype = ctypes.c_uint32
 ERROR_ALREADY_EXISTS = 183
 
 
+def is_packaged():
+    """True when running as the Microsoft Store (MSIX) app."""
+    try:
+        n = ctypes.c_uint32(0)
+        # ERROR_INSUFFICIENT_BUFFER (122) = has a package; 15700 = not packaged
+        return ctypes.windll.kernel32.GetCurrentPackageFullName(ctypes.byref(n), None) == 122
+    except Exception:
+        return False
+
+
 def claim_single_instance():
     """Returns the "show yourself" event if this is the first instance; otherwise
     wakes the running instance up and returns None."""
@@ -1409,10 +1419,13 @@ def main():
         ctypes.windll.shcore.SetProcessDpiAwareness(1)  # crisp text on scaled displays
     except Exception:
         pass
-    try:  # own taskbar identity (same ID as the installer's shortcuts), not "Python"
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("RMDeck.App")
-    except Exception:
-        pass
+    # own taskbar identity (same ID as the installer's shortcuts), not "Python".
+    # The Microsoft Store (MSIX) version already has one from its package.
+    if not is_packaged():
+        try:
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("RMDeck.App")
+        except Exception:
+            pass
     if app_capture is None:
         tk.Tk().withdraw()
         messagebox.showerror(APP_NAME,

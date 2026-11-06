@@ -29,6 +29,24 @@ jobs:
         shell: cmd
         run: build_installer.bat nopause
 
+      # Microsoft Store package. Identity values come from Partner Center
+      # (repository variables MSIX_IDENTITY_NAME, MSIX_PUBLISHER, MSIX_PUBLISHER_DISPLAY_NAME);
+      # without them a placeholder identity is used, fine for checking the build.
+      - name: Build Microsoft Store package (MSIX)
+        shell: pwsh
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+        run: ./packaging/build_msix.ps1
+
+      - name: Upload MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: RMDeck-msix
+          path: dist/RMDeck-*.msix
+          if-no-files-found: error
+
       - name: Upload unsigned installer
         id: upload-unsigned
         uses: actions/upload-artifact@v4
