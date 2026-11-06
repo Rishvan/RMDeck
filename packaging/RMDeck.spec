@@ -7,6 +7,7 @@ from PyInstaller.utils.hooks import collect_all
 ROOT = os.path.dirname(SPECPATH)
 
 datas, binaries, hiddenimports = collect_all("pyaudiowpatch")
+datas += [(os.path.join(ROOT, "assets", "rmdeck_icon.png"), "assets")]  # app logo
 hiddenimports += ["pystray._win32", "comtypes.stream", "PIL._tkinter_finder"]
 
 a = Analysis(

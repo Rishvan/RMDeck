@@ -5,6 +5,8 @@ Shapes are drawn with Pillow at 4x and scaled down (anti-aliased), then shown
 as images on Tk canvases. Everything takes a `scale` for high-DPI screens.
 """
 import base64
+import os
+import sys
 import tkinter as tk
 import tkinter.font as tkfont
 from collections import OrderedDict
@@ -757,58 +759,21 @@ def letter_tile(master, name, size, bg=CARD):
     return cv
 
 
-def _logo_font(px):
-    from PIL import ImageFont
-    for name in ("segoeuib.ttf", "seguisb.ttf", "arialbd.ttf"):
-        try:
-            return ImageFont.truetype(name, px)
-        except OSError:
-            continue
-    try:
-        return ImageFont.load_default(px)
-    except TypeError:
-        return ImageFont.load_default()
+_LOGO_FILE = "rmdeck_icon.png"
+_logo_src = None
+
+
+def _logo_path():
+    """assets/rmdeck_icon.png next to the code, or inside the PyInstaller bundle."""
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, "assets", _LOGO_FILE)
 
 
 def app_logo(size):
-    """RMDeck's icon as a Pillow image: a rounded blue gradient tile with a white
-    microphone between sound waves and "RV" underneath. Small sizes (taskbar,
-    title bar) show just a bold "RV" so they stay readable."""
-    S = size * _SS
-    small = size <= 24
-    top, bottom = _rgb("#4f8bff"), _rgb("#1d4ed8")
-    corners = Image.new("L", (2, 2))
-    corners.putdata([0, 128, 128, 255])
-    grad = corners.resize((S, S), Image.BILINEAR)
-    tile = Image.composite(Image.new("RGBA", (S, S), bottom + (255,)),
-                           Image.new("RGBA", (S, S), top + (255,)), grad)
-    mask = Image.new("L", (S, S), 0)
-    m = 0 if small else S // 32
-    ImageDraw.Draw(mask).rounded_rectangle([m, m, S - 1 - m, S - 1 - m],
-                                           radius=int(S * 0.24), fill=255)
-    im = Image.new("RGBA", (S, S), top + (0,))
-    im.paste(tile, (0, 0), mask)
-    d = ImageDraw.Draw(im)
-    white = (255, 255, 255, 255)
-
-    def text_centered(txt, px, cy):
-        f = _logo_font(int(px))
-        x0, y0, x1, y1 = d.textbbox((0, 0), txt, font=f)
-        d.text(((S - (x1 - x0)) / 2 - x0, cy - (y1 - y0) / 2 - y0), txt, font=f, fill=white)
-
-    if small:
-        text_centered("RV", S * 0.56, S * 0.5)
-        return im.reduce(_SS)
-
-    # microphone: capsule, cradle arc and stem
-    d.rounded_rectangle([S * 0.42, S * 0.14, S * 0.58, S * 0.44], radius=S * 0.08, fill=white)
-    d.arc([S * 0.34, S * 0.24, S * 0.66, S * 0.53], 0, 180, fill=white, width=int(S * 0.04))
-    d.rectangle([S * 0.48, S * 0.52, S * 0.52, S * 0.60], fill=white)
-    # sound waves either side
-    for s in (-1, 1):
-        for i, h in enumerate((0.20, 0.11)):
-            x = S * (0.5 + s * (0.24 + 0.08 * i))
-            d.rounded_rectangle([x - S * 0.02, S * (0.31 - h / 2), x + S * 0.02, S * (0.31 + h / 2)],
-                                radius=S * 0.02, fill=white)
-    text_centered("RV", S * 0.25, S * 0.75)
-    return im.reduce(_SS)
+    """RMDeck's icon (blue rounded tile, mic and "RV") as a Pillow RGBA image of
+    size x size, scaled down from assets/rmdeck_icon.png."""
+    global _logo_src
+    if _logo_src is None:
+        _logo_src = Image.open(_logo_path()).convert("RGBA")
+        _logo_src.load()
+    return _logo_src.resize((int(size), int(size)), Image.LANCZOS)
