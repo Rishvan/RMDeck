@@ -5,3 +5,4 @@ psutil
 numpy
 pystray
 pillow
+qrcode

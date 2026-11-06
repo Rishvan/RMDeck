@@ -20,7 +20,7 @@ from tkinter import messagebox, filedialog
 import numpy as np
 import psutil
 import pyaudiowpatch as pyaudio
-from PIL import ImageTk
+from PIL import Image, ImageTk
 
 import app_info
 import ui_kit as ui
@@ -53,6 +53,7 @@ APP_NAME = "RMDex"
 APP_FULL_NAME = "RV's Mix Deck"
 APP_VERSION = "1.0.0"
 AUTHOR = "Rishvan"
+SUPPORT_URL = "https://buymeacoffee.com/rishvanrv7h"
 
 SETTINGS_PATH = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")),
                              "RMDex", "settings.json")
@@ -603,6 +604,108 @@ class SettingsDialog(tk.Toplevel):
         self.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.grab_set()
         self.focus_force()
+
+
+# --------------------------------------------------------------------------- #
+#  Support (Buy me a coffee)
+# --------------------------------------------------------------------------- #
+def qr_image(data, px, logo=True):
+    """QR code for `data` about `px` pixels wide (Pillow RGBA), with the app logo
+    in the middle (high error correction keeps it scannable)."""
+    import qrcode
+    from qrcode.image.pil import PilImage
+    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H, border=2)
+    qr.add_data(data)
+    qr.make(fit=True)
+    qr.box_size = max(2, px // (qr.modules_count + 2 * qr.border))
+    img = qr.make_image(image_factory=PilImage, fill_color=TEXT,
+                        back_color="white").get_image().convert("RGBA")
+    if logo:
+        size = img.width // 5
+        pad = max(2, size // 10)
+        box = Image.new("RGBA", (size + 2 * pad, size + 2 * pad), (255, 255, 255, 255))
+        mark = ui.app_logo(size)
+        box.paste(mark, (pad, pad), mark)
+        img.paste(box, ((img.width - box.width) // 2, (img.height - box.height) // 2))
+    return img
+
+
+class SupportDialog(tk.Toplevel):
+    """RMDex-styled "Buy me a coffee" window: scan the QR with a phone to support."""
+
+    COFFEES = (1, 3, 5)
+
+    def __init__(self, app):
+        super().__init__(app)
+        S, self.app = app.S, app
+        self.title("Support RMDex")
+        self.configure(bg=BG)
+        self.iconphoto(False, *app._icons)
+        if app.state() != "withdrawn":   # a transient of a hidden window stays hidden
+            self.transient(app)
+        self.resizable(False, False)
+        w = S(400)
+
+        card = ui.Card(self, app.scale, pad=22)
+        card.pack(fill="both", expand=True, padx=S(14), pady=S(14))
+        b = card.body
+        head = tk.Frame(b, bg=CARD)
+        head.pack(fill="x")
+        tk.Label(head, text="☕", bg=CARD, fg=TEXT, font=font(18)).pack(side="left")
+        tk.Label(head, text="Buy me a coffee", bg=CARD, fg=TEXT,
+                 font=font(14, True)).pack(side="left", padx=(S(8), 0))
+        tk.Label(b, text="RMDex is free. If it makes your stream sound better, "
+                         "a coffee keeps it going. Thank you!",
+                 bg=CARD, fg=MUTED, font=font(9), justify="left", anchor="w",
+                 wraplength=w - S(80)).pack(fill="x", pady=(S(8), S(14)))
+
+        chips = tk.Frame(b, bg=CARD)
+        chips.pack(fill="x")
+        self.chip_btns = {}
+        for n in self.COFFEES:
+            btn = ui.RoundButton(chips, "☕ × %d" % n, lambda n=n: self._pick(n), app.scale,
+                                 "neutral", height=34, expand=True)
+            btn.pack(side="left", fill="x", expand=True, padx=(0 if n == 1 else S(8), 0))
+            self.chip_btns[n] = btn
+
+        qr_px = S(200)
+        self._qr = ImageTk.PhotoImage(qr_image(SUPPORT_URL, qr_px))
+        frame = ui.Card(b, app.scale, pad=10, radius=12, bg=CARD)
+        frame.pack(pady=(S(16), S(6)))
+        tk.Label(frame.body, image=self._qr, bg=CARD).pack()
+        self.hint = tk.Label(b, text="", bg=CARD, fg=TEXT, font=font(9, True))
+        self.hint.pack()
+        tk.Label(b, text="Scan with your phone camera to open the page and pay there.",
+                 bg=CARD, fg=MUTED, font=font(8)).pack(pady=(S(2), 0))
+
+        foot = tk.Frame(b, bg=CARD)
+        foot.pack(fill="x", pady=(S(18), 0))
+        ui.Link(foot, "Open on this PC instead", self._open_here).pack(side="left")
+        ui.RoundButton(foot, "Close", self.destroy, app.scale, "primary",
+                       min_width=90).pack(side="right")
+        self._pick(3)
+
+        self.bind("<Escape>", lambda _e: self.destroy())
+        self.update_idletasks()
+        h = self.winfo_reqheight()
+        if app.state() == "withdrawn":   # opened from the tray: centre on the screen
+            x = (self.winfo_screenwidth() - w) // 2
+            y = (self.winfo_screenheight() - h) // 3
+        else:
+            x = app.winfo_rootx() + (app.winfo_width() - w) // 2
+            y = app.winfo_rooty() + (app.winfo_height() - h) // 3
+        self.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.lift()
+        self.focus_force()
+
+    def _pick(self, n):
+        for k, btn in self.chip_btns.items():
+            btn.set(variant="primary" if k == n else "neutral")
+        self.hint.configure(text="Pick %d coffee%s on the page" % (n, "" if n == 1 else "s"))
+
+    def _open_here(self):
+        import webbrowser
+        webbrowser.open(SUPPORT_URL)
 
 
 # --------------------------------------------------------------------------- #
@@ -1283,6 +1386,14 @@ class App(tk.Tk):
             return
         self._settings = SettingsDialog(self)
 
+    def open_support(self):
+        if getattr(self, "_support", None) is not None and self._support.winfo_exists():
+            self._support.deiconify()
+            self._support.lift()
+            self._support.focus_force()
+            return
+        self._support = SupportDialog(self)
+
     def _background_changed(self, on):
         self.background = on
         if on:
@@ -1300,6 +1411,8 @@ class App(tk.Tk):
             pystray.MenuItem("Open RMDex", lambda: post(self.show_window), default=True),
             pystray.MenuItem(lambda _i: "Stop listening" if self.engine.listening else "Listen",
                              lambda: post(self.toggle_listen)),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("☕  Buy me a coffee", lambda: post(self.open_support)),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("Quit", lambda: post(self.quit_app)))
         self.tray = pystray.Icon("RMDex", ui.app_logo(64), "RMDex", menu)
