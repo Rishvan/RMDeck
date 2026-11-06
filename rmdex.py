@@ -576,6 +576,22 @@ class SettingsDialog(tk.Toplevel):
 
         tk.Frame(b, bg=BORDER, height=1).pack(fill="x", pady=S(20))
 
+        tk.Label(b, text="SUPPORT", bg=CARD, fg=FAINT,
+                 font=font(8, True)).pack(anchor="w", pady=(0, S(8)))
+        row = tk.Frame(b, bg=CARD)
+        row.pack(fill="x")
+        ui.RoundButton(row, "☕  Buy me a coffee", self._support, app.scale, "soft",
+                       height=34).pack(side="right", anchor="n")
+        txt = tk.Frame(row, bg=CARD)
+        txt.pack(side="left", fill="x", expand=True, padx=(0, S(16)))
+        tk.Label(txt, text="Enjoying RMDex?", bg=CARD, fg=TEXT, font=font(10, True),
+                 anchor="w").pack(fill="x")
+        tk.Label(txt, text="It's free. A coffee helps keep it going.", bg=CARD, fg=MUTED,
+                 font=font(9), anchor="w", justify="left",
+                 wraplength=w - S(230)).pack(fill="x", pady=(S(2), 0))
+
+        tk.Frame(b, bg=BORDER, height=1).pack(fill="x", pady=S(20))
+
         tk.Label(b, text="ABOUT", bg=CARD, fg=FAINT,
                  font=font(8, True)).pack(anchor="w", pady=(0, S(8)))
         about = tk.Frame(b, bg=CARD)
@@ -604,6 +620,12 @@ class SettingsDialog(tk.Toplevel):
         self.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.grab_set()
         self.focus_force()
+
+    def _support(self):
+        # Settings holds the input grab, so close it before showing the Support window
+        app = self.app
+        self.destroy()
+        app.open_support()
 
 
 # --------------------------------------------------------------------------- #
