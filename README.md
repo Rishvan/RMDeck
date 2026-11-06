@@ -51,6 +51,11 @@ Windows 10 version 2004 (build 19041) or newer, 64-bit.
 Download `RMDeck-Setup-<version>.exe` from the [Releases](../../releases) page and run it.
 No admin rights needed.
 
+> **"Windows protected your PC"?** The installer isn't code-signed yet, so Microsoft
+> Defender SmartScreen shows *Unknown publisher* for new downloads. Click
+> **More info → Run anyway** to install. The full source is in this repo and the
+> installer is built from it with `build_installer.bat`.
+
 ## Run from source
 
 Needs Python 3.10+.
