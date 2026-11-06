@@ -15,9 +15,9 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
-# placeholders let the package build (and be checked) before the Store values exist
+# RMDex's identity in the Microsoft Store (Partner Center > Product identity)
 if (-not $IdentityName) { $IdentityName = "Rishvan.RMDex" }
-if (-not $Publisher) { $Publisher = "CN=Rishvan" }
+if (-not $Publisher) { $Publisher = "CN=CDC4C73D-837F-4B71-A1EC-F279B0DE6DB5" }
 if (-not $PublisherDisplayName) { $PublisherDisplayName = "Rishvan" }
 
 $version = (Select-String -Path rmdex.py -Pattern '^APP_VERSION = "([\d.]+)"').Matches[0].Groups[1].Value
