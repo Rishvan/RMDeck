@@ -91,6 +91,10 @@ The installer is written to `dist\RMDeck-Setup-<version>.exe`.
 | `ui_kit.py` | Rounded Tkinter widgets and the app logo |
 | `packaging/` | PyInstaller spec, Inno Setup script, icon/version generator |
 
+## License
+
+[MIT](LICENSE) © 2026 Rishvan
+
 ---
 
 Developed by Rishvan.
