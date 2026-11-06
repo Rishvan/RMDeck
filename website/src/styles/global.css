@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --color-brand-400: #7c93ff;
+  --color-brand-500: #4c6ef5;
+  --color-brand-600: #3b5bfc;
+  --color-brand-700: #2743d1;
+  --color-ink: #0f172a;
+  --color-ink-muted: #64748b;
+  --color-line: #e5e9f2;
+  --color-surface: #f6f8ff;
+  --color-success: #22c55e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #fff;
+}
+
+.gradient-brand {
+  background-image: linear-gradient(135deg, #7c93ff 0%, #4c6ef5 45%, #2743d1 100%);
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -24px;
+  }
+}
+
+@keyframes flow-travel {
+  0% {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.flow-line {
+  stroke-dasharray: 6 6;
+  filter: drop-shadow(0 0 3px #4c6ef58c);
+  transition: opacity 0.5s, stroke-width 0.5s;
+  animation: flow-dash 1.2s linear infinite;
+}
+
+.flow-line-out {
+  filter: drop-shadow(0 0 5px #3b5bfcb3);
+  animation-duration: 0.9s;
+}
+
+.flow-dot {
+  offset-rotate: 0deg;
+  filter: drop-shadow(0 0 4px #4c6ef5e6);
+  transition: opacity 0.3s;
+  animation: flow-travel 1.6s linear infinite;
+}
+
+.node-glass {
+  filter: drop-shadow(0 2px 10px #3b5bfc26);
+}
+
+.hub-core {
+  filter: drop-shadow(0 0 14px #3b5bfc8c);
+}
+
+@keyframes hub-pulse {
+  0%,
+  to {
+    opacity: 0.6;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.hub-halo {
+  transform-origin: 50%;
+  transform-box: fill-box;
+  animation: hub-pulse 2.6s ease-in-out infinite;
+}
+
+.flow-node {
+  transition: opacity 0.5s;
+}
+
+.flow-node.is-off {
+  opacity: 0.35;
+}
+
+.flow-node.is-off .status-dot {
+  fill: var(--color-ink-muted);
+}
+
+.flow-node .label-off,
+.flow-node.is-off .label-on {
+  display: none;
+}
+
+.flow-node.is-off .label-off {
+  display: inline;
+}
+
+.flow-line.is-off {
+  opacity: 0.15;
+  animation-play-state: paused;
+}
+
+.flow-dot.is-off {
+  opacity: 0;
+  animation-play-state: paused;
+}
