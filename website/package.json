@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+     "resync": "npm run build && rsync -avz --delete dist/ flash-space:/home/apps/rmdex/"
   },
   "dependencies": {
     "astro": "^5.1.1",
