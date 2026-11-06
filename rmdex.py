@@ -1,5 +1,5 @@
 """
-RMDeck (RV's Mix Deck) - mix the audio of the apps you pick (plus your mic)
+RMDex (RV's Mix Deck) - mix the audio of the apps you pick (plus your mic)
 and play the mix live on another output, e.g. the one feeding a streaming PC.
 
 Windows 10 2004+ only. Requires: PyAudioWPatch, pycaw, psutil, numpy  (see requirements.txt)
@@ -49,27 +49,27 @@ APPS_SOURCE = {"index": -100, "name": "Selected apps", "kind": "apps",
                "maxInputChannels": 2, "defaultSampleRate": 48000}
 
 
-APP_NAME = "RMDeck"
+APP_NAME = "RMDex"
 APP_FULL_NAME = "RV's Mix Deck"
 APP_VERSION = "1.0.0"
 AUTHOR = "Rishvan"
 
 SETTINGS_PATH = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")),
-                             "RMDeck", "settings.json")
-# settings saved before the rename to RMDeck; read once if there are no new ones yet
-OLD_SETTINGS_PATH = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")),
-                                 "CaptureMonitor", "settings.json")
+                             "RMDex", "settings.json")
+# settings saved under the app's earlier names; read once if there are no new ones yet
+OLD_SETTINGS_PATHS = [os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")),
+                                   old, "settings.json") for old in ("RMDeck", "CaptureMonitor")]
 LOG_PATH = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")),
-                        "RMDeck", "rmdeck.log")
+                        "RMDex", "rmdex.log")
 
-MUTEX_NAME = "Local\\RMDeck.SingleInstance"
-SHOW_EVENT = "Local\\RMDeck.Show"
+MUTEX_NAME = "Local\\RMDex.SingleInstance"
+SHOW_EVENT = "Local\\RMDex.Show"
 
-log = logging.getLogger("rmdeck")
+log = logging.getLogger("rmdex")
 
 
 def setup_logging():
-    """Log to %LOCALAPPDATA%\\RMDeck - the windowed app has no console."""
+    """Log to %LOCALAPPDATA%\\RMDex - the windowed app has no console."""
     try:
         os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
         h = logging.handlers.RotatingFileHandler(LOG_PATH, maxBytes=1_000_000, backupCount=2,
@@ -568,7 +568,7 @@ class SettingsDialog(tk.Toplevel):
                          anchor="w", cursor="hand2")
         title.pack(fill="x")
         title.bind("<Button-1>", lambda _e: sw._click(None))
-        tk.Label(txt, text="When you close the window, RMDeck keeps playing your apps "
+        tk.Label(txt, text="When you close the window, RMDex keeps playing your apps "
                            "and stays in the system tray. Quit from the tray icon.",
                  bg=CARD, fg=MUTED, font=font(9), anchor="w", justify="left",
                  wraplength=w - S(150)).pack(fill="x", pady=(S(2), 0))
@@ -610,9 +610,9 @@ class SettingsDialog(tk.Toplevel):
 # --------------------------------------------------------------------------- #
 class App(tk.Tk):
     def __init__(self, show_event=None):
-        super().__init__(className="RMDeck")
+        super().__init__(className="RMDex")
         self.show_event = show_event
-        self.title("RMDeck — %s" % APP_FULL_NAME)
+        self.title("RMDex — %s" % APP_FULL_NAME)
         self.configure(bg=BG)
         self.scale = max(1.0, self.winfo_fpixels("1i") / 96.0)
         S = self.S
@@ -652,7 +652,7 @@ class App(tk.Tk):
             self._ensure_tray()
         self.after(100, self._tick)
         self.protocol("WM_DELETE_WINDOW", self._close_requested)
-        log.info("RMDeck %s started", APP_VERSION)
+        log.info("RMDex %s started", APP_VERSION)
 
     def report_callback_exception(self, exc, val, tb):
         """Errors inside Tk callbacks: log them and tell the user once."""
@@ -687,7 +687,7 @@ class App(tk.Tk):
         tk.Label(head, image=self._logo, bg=BG).pack(side="left")
         titles = tk.Frame(head, bg=BG)
         titles.pack(side="left", fill="x", expand=True, padx=(S(12), 0))
-        tk.Label(titles, text="RMDeck", bg=BG, fg=TEXT,
+        tk.Label(titles, text="RMDex", bg=BG, fg=TEXT,
                  font=font(15, True), anchor="w").pack(fill="x")
         ui.ElideLabel(titles, "%s  ·  Mix the apps you choose with your mic and listen live."
                       % APP_FULL_NAME,
@@ -1222,7 +1222,7 @@ class App(tk.Tk):
                 return
             oi = self.out_dd.current()
             if oi < 0:
-                self._alert("RMDeck", "Pick where to listen first.")
+                self._alert("RMDex", "Pick where to listen first.")
                 return
             try:
                 self.engine.start_listen(APPS_SOURCE, self.outputs[oi][1])
@@ -1241,7 +1241,7 @@ class App(tk.Tk):
         self.out_dd.set_enabled(not e.listening)
         self._draw_chip()
         if self.tray is not None:
-            self.tray.title = "RMDeck — %s" % ("Listening" if e.listening else "Idle")
+            self.tray.title = "RMDex — %s" % ("Listening" if e.listening else "Idle")
             self.tray.update_menu()
 
     def set_status(self, text):
@@ -1273,7 +1273,7 @@ class App(tk.Tk):
             self.engine._close_source_if_idle()
             self._set_buttons()
             self.set_status(err)
-            self._alert("RMDeck", err, error=True)
+            self._alert("RMDex", err, error=True)
         self.after(100, self._tick)
 
     # ---------- background / tray ----------
@@ -1287,7 +1287,7 @@ class App(tk.Tk):
         self.background = on
         if on:
             self._ensure_tray()
-            self.set_status("Closing the window will keep RMDeck running in the tray.")
+            self.set_status("Closing the window will keep RMDex running in the tray.")
         else:
             self._remove_tray()
         self._save_settings()
@@ -1297,12 +1297,12 @@ class App(tk.Tk):
             return
         post = self.ui_q.put
         menu = pystray.Menu(
-            pystray.MenuItem("Open RMDeck", lambda: post(self.show_window), default=True),
+            pystray.MenuItem("Open RMDex", lambda: post(self.show_window), default=True),
             pystray.MenuItem(lambda _i: "Stop listening" if self.engine.listening else "Listen",
                              lambda: post(self.toggle_listen)),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("Quit", lambda: post(self.quit_app)))
-        self.tray = pystray.Icon("RMDeck", ui.app_logo(64), "RMDeck", menu)
+        self.tray = pystray.Icon("RMDex", ui.app_logo(64), "RMDex", menu)
         threading.Thread(target=self.tray.run, daemon=True).start()
 
     def _remove_tray(self):
@@ -1322,7 +1322,7 @@ class App(tk.Tk):
                 self._told_tray = True
                 try:
                     self.tray.notify("Still running in the background. Right-click the tray "
-                                     "icon to open, listen or quit.", "RMDeck")
+                                     "icon to open, listen or quit.", "RMDex")
                 except Exception:
                     pass
         else:
@@ -1340,7 +1340,8 @@ class App(tk.Tk):
 
     # ---------- settings ----------
     def _load_settings(self):
-        path = SETTINGS_PATH if os.path.isfile(SETTINGS_PATH) else OLD_SETTINGS_PATH
+        path = next((p for p in [SETTINGS_PATH] + OLD_SETTINGS_PATHS if os.path.isfile(p)),
+                    SETTINGS_PATH)
         try:
             with open(path, encoding="utf-8") as fh:
                 data = json.load(fh)
@@ -1383,7 +1384,7 @@ class App(tk.Tk):
 
 
 def selftest(seconds=2.0):
-    """`RMDeck.exe --selftest`: capture a few seconds from every app that is
+    """`RMDex.exe --selftest`: capture a few seconds from every app that is
     playing sound right now, without UI or playback. Result goes to the log;
     exit code 0 = audio captured."""
     from pycaw.pycaw import AudioUtilities as AU
@@ -1423,7 +1424,7 @@ def main():
     # The Microsoft Store (MSIX) version already has one from its package.
     if not is_packaged():
         try:
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("RMDeck.App")
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("RMDex.App")
         except Exception:
             pass
     if app_capture is None:

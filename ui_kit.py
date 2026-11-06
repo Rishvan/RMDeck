@@ -759,19 +759,19 @@ def letter_tile(master, name, size, bg=CARD):
     return cv
 
 
-_LOGO_FILE = "rmdeck_icon.png"
+_LOGO_FILE = "rmdex_icon.png"
 _logo_src = None
 
 
 def _logo_path():
-    """assets/rmdeck_icon.png next to the code, or inside the PyInstaller bundle."""
+    """assets/rmdex_icon.png next to the code, or inside the PyInstaller bundle."""
     base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base, "assets", _LOGO_FILE)
 
 
 def app_logo(size):
-    """RMDeck's icon (blue rounded tile, mic and "RV") as a Pillow RGBA image of
-    size x size, scaled down from assets/rmdeck_icon.png."""
+    """RMDex's icon (blue rounded tile, mic and "RV") as a Pillow RGBA image of
+    size x size, scaled down from assets/rmdex_icon.png."""
     global _logo_src
     if _logo_src is None:
         _logo_src = Image.open(_logo_path()).convert("RGBA")

@@ -1,4 +1,4 @@
-# Builds RMDeck-Setup-<version>.exe from this repository on GitHub's servers,
+# Builds RMDex-Setup-<version>.exe from this repository on GitHub's servers,
 # so every release binary comes from a verifiable, automated build.
 # Once SignPath is set up (see README > Code signing policy), the installer is
 # sent to SignPath for signing; until then the step is skipped.
@@ -43,16 +43,16 @@ jobs:
       - name: Upload MSIX
         uses: actions/upload-artifact@v4
         with:
-          name: RMDeck-msix
-          path: dist/RMDeck-*.msix
+          name: RMDex-msix
+          path: dist/RMDex-*.msix
           if-no-files-found: error
 
       - name: Upload unsigned installer
         id: upload-unsigned
         uses: actions/upload-artifact@v4
         with:
-          name: RMDeck-Setup-unsigned
-          path: dist/RMDeck-Setup-*.exe
+          name: RMDex-Setup-unsigned
+          path: dist/RMDex-Setup-*.exe
           if-no-files-found: error
 
       # Runs only after the repository variable SIGNPATH_ORGANIZATION_ID and the
@@ -63,7 +63,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'RMDeck' }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'RMDex' }}
           signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
           artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIG_SLUG || 'initial' }}
           github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
@@ -74,6 +74,6 @@ jobs:
         if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: RMDeck-Setup-signed
+          name: RMDex-Setup-signed
           path: signed/
           if-no-files-found: error

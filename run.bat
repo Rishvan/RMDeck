@@ -8,4 +8,4 @@ if errorlevel 1 (
   pause
   exit /b
 )
-start "" pythonw rmdeck.py
+start "" pythonw rmdex.py

@@ -1,4 +1,4 @@
-# RMDeck — RV's Mix Deck
+# RMDex — RV's Mix Deck
 
 Send exactly the audio you want from your gaming PC to your streaming PC.
 Pick the apps (the game, Discord, music…), mix them with your microphone, set
@@ -6,14 +6,14 @@ each one's volume, and play the mix out to the device that feeds your stream.
 
 ## Main use: two-PC streaming
 
-You game on one PC and stream from another. RMDeck runs on the **gaming PC**
+You game on one PC and stream from another. RMDex runs on the **gaming PC**
 and controls which sound reaches the **streaming PC**:
 
 ```
 Gaming PC                                         Streaming PC
 ┌──────────────────────────────┐                  ┌──────────────────┐
 │ Game      ──┐                │                  │                  │
-│ Discord   ──┼─ RMDeck mix ───┼── "Listen on" ──►│  capture card /  │──► OBS ──► stream
+│ Discord   ──┼─ RMDex mix ───┼── "Listen on" ──►│  capture card /  │──► OBS ──► stream
 │ Music     ──┤  (per-app vol) │   output device  │  line-in / USB   │
 │ Mic (NS)  ──┘                │                  │  audio interface │
 └──────────────────────────────┘                  └──────────────────┘
@@ -29,7 +29,7 @@ Gaming PC                                         Streaming PC
    source in OBS (or your streaming software).
 
 You keep hearing your full game audio on your own headphones as usual; only the
-RMDeck mix goes to the stream.
+RMDex mix goes to the stream.
 
 It works on a single PC too: pick your headphones in **Listen on** to monitor the mix.
 
@@ -48,7 +48,7 @@ Windows 10 version 2004 (build 19041) or newer, 64-bit.
 
 ## Install
 
-Download `RMDeck-Setup-<version>.exe` from the [Releases](../../releases) page and run it.
+Download `RMDex-Setup-<version>.exe` from the [Releases](../../releases) page and run it.
 No admin rights needed.
 
 > **"Windows protected your PC"?** The installer isn't code-signed yet, so Microsoft
@@ -69,7 +69,7 @@ or
 
 ```bat
 python -m pip install -r requirements.txt
-python rmdeck.py
+python rmdex.py
 ```
 
 ## Build the installer
@@ -80,13 +80,13 @@ Needs Python 3.10+ and [Inno Setup 6](https://jrsoftware.org/isdl.php).
 build_installer.bat
 ```
 
-The installer is written to `dist\RMDeck-Setup-<version>.exe`.
+The installer is written to `dist\RMDex-Setup-<version>.exe`.
 
 ## Project layout
 
 | File | What it does |
 | --- | --- |
-| `rmdeck.py` | App window, settings, audio engine (listen / playback) |
+| `rmdex.py` | App window, settings, audio engine (listen / playback) |
 | `app_capture.py` | Per-app WASAPI capture, mixer, mic capture and noise suppression |
 | `app_info.py` | App names, publishers and icons read from `.exe` files |
 | `ui_kit.py` | Rounded Tkinter widgets and the app logo |
@@ -108,7 +108,7 @@ signing request is approved manually.
 
 This program will not transfer any information to other networked systems unless
 specifically requested by the user or the person installing or operating it.
-RMDeck only plays audio on the output device you choose; it has no network
+RMDex only plays audio on the output device you choose; it has no network
 features, telemetry or update checks.
 
 ## License

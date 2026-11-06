@@ -1,6 +1,6 @@
 """
 Writes the MSIX logo images (all scale / target-size variants) into <out>/Assets,
-drawn from assets/rmdeck_icon.png via ui_kit.app_logo. Used by build_msix.ps1.
+drawn from assets/rmdex_icon.png via ui_kit.app_logo. Used by build_msix.ps1.
 """
 import os
 import sys

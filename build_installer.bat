@@ -1,5 +1,5 @@
 @echo off
-rem Builds dist\RMDeck-Setup-<version>.exe
+rem Builds dist\RMDex-Setup-<version>.exe
 rem Needs: Python 3.10+ and Inno Setup 6 (https://jrsoftware.org/isdl.php)
 setlocal
 cd /d "%~dp0"
@@ -13,7 +13,7 @@ for /f %%v in ('python packaging\prepare.py') do set VERSION=%%v
 if not defined VERSION goto :fail
 
 echo [3/4] Building the app (version %VERSION%)...
-python -m PyInstaller --noconfirm --clean --distpath build\dist --workpath build\work packaging\RMDeck.spec
+python -m PyInstaller --noconfirm --clean --distpath build\dist --workpath build\work packaging\RMDex.spec
 if errorlevel 1 goto :fail
 
 echo [4/4] Building the installer...
@@ -29,7 +29,7 @@ if not defined ISCC (
 if errorlevel 1 goto :fail
 
 echo.
-echo Done: dist\RMDeck-Setup-%VERSION%.exe
+echo Done: dist\RMDex-Setup-%VERSION%.exe
 if not "%1"=="nopause" pause
 exit /b 0
 

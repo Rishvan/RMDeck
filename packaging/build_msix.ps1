@@ -1,9 +1,9 @@
-# Builds dist\RMDeck-<version>.msix for the Microsoft Store from build\dist\RMDeck
+# Builds dist\RMDex-<version>.msix for the Microsoft Store from build\dist\RMDex
 # (run build_installer.bat first). Needs the Windows 10/11 SDK (makeappx, makepri).
 #
 # The Store re-signs the package, so it is left unsigned. Pass the identity values
 # from Partner Center > your app > Product identity:
-#   powershell -File packaging\build_msix.ps1 -IdentityName 12345Rishvan.RMDeck `
+#   powershell -File packaging\build_msix.ps1 -IdentityName 12345Rishvan.RMDex `
 #     -Publisher "CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" -PublisherDisplayName Rishvan
 # (or set MSIX_IDENTITY_NAME / MSIX_PUBLISHER / MSIX_PUBLISHER_DISPLAY_NAME)
 param(
@@ -16,16 +16,16 @@ $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
 # placeholders let the package build (and be checked) before the Store values exist
-if (-not $IdentityName) { $IdentityName = "Rishvan.RMDeck" }
+if (-not $IdentityName) { $IdentityName = "Rishvan.RMDex" }
 if (-not $Publisher) { $Publisher = "CN=Rishvan" }
 if (-not $PublisherDisplayName) { $PublisherDisplayName = "Rishvan" }
 
-$version = (Select-String -Path rmdeck.py -Pattern '^APP_VERSION = "([\d.]+)"').Matches[0].Groups[1].Value
+$version = (Select-String -Path rmdex.py -Pattern '^APP_VERSION = "([\d.]+)"').Matches[0].Groups[1].Value
 $parts = @($version.Split(".") + @("0", "0", "0", "0"))[0..2]
 $msixVersion = ($parts -join ".") + ".0"   # the Store needs the 4th number to be 0
 
-$app = Join-Path $root "build\dist\RMDeck"
-if (-not (Test-Path (Join-Path $app "RMDeck.exe"))) { throw "Run build_installer.bat first (build\dist\RMDeck missing)." }
+$app = Join-Path $root "build\dist\RMDex"
+if (-not (Test-Path (Join-Path $app "RMDex.exe"))) { throw "Run build_installer.bat first (build\dist\RMDex missing)." }
 
 $kits = Join-Path ${env:ProgramFiles(x86)} "Windows Kits\10\bin"
 $sdk = Get-ChildItem $kits -Directory -ErrorAction SilentlyContinue |
@@ -38,7 +38,7 @@ $makepri = Join-Path $sdk.FullName "x64\makepri.exe"
 $stage = Join-Path $root "build\msix"
 if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
 New-Item -ItemType Directory -Force $stage | Out-Null
-Copy-Item $app (Join-Path $stage "RMDeck") -Recurse
+Copy-Item $app (Join-Path $stage "RMDex") -Recurse
 
 python packaging\msix\make_assets.py $stage
 if ($LASTEXITCODE) { throw "Logo generation failed." }
@@ -56,7 +56,7 @@ if ($LASTEXITCODE) { throw "makepri createconfig failed." }
 if ($LASTEXITCODE) { throw "makepri new failed." }
 
 New-Item -ItemType Directory -Force (Join-Path $root "dist") | Out-Null
-$out = Join-Path $root "dist\RMDeck-$version.msix"
+$out = Join-Path $root "dist\RMDex-$version.msix"
 & $makeappx pack /d $stage /p $out /o
 if ($LASTEXITCODE) { throw "makeappx pack failed." }
 Write-Host "Done: $out  (identity $IdentityName, version $msixVersion)"

@@ -1,6 +1,6 @@
 """
 Build step 1: writes packaging/app.ico and packaging/version_info.txt from
-APP_VERSION in rmdeck.py, then prints the version (for the build script).
+APP_VERSION in rmdex.py, then prints the version (for the build script).
 """
 import os
 import re
@@ -10,7 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
-with open(os.path.join(ROOT, "rmdeck.py"), encoding="utf-8") as fh:
+with open(os.path.join(ROOT, "rmdex.py"), encoding="utf-8") as fh:
     VERSION = re.search(r'^APP_VERSION = "([\d.]+)"', fh.read(), re.M).group(1)
 
 # -- icon: the same rounded logo the app draws for its window and tray
@@ -33,12 +33,12 @@ with open(os.path.join(HERE, "version_info.txt"), "w", encoding="utf-8") as fh:
   kids=[
     StringFileInfo([StringTable('040904B0', [
       StringStruct('CompanyName', 'Rishvan'),
-      StringStruct('FileDescription', "RMDeck - RV's Mix Deck"),
+      StringStruct('FileDescription', "RMDex - RV's Mix Deck"),
       StringStruct('LegalCopyright', '(c) Rishvan. Developed by Rishvan.'),
       StringStruct('FileVersion', '%(v)s'),
-      StringStruct('InternalName', 'RMDeck'),
-      StringStruct('OriginalFilename', 'RMDeck.exe'),
-      StringStruct('ProductName', 'RMDeck'),
+      StringStruct('InternalName', 'RMDex'),
+      StringStruct('OriginalFilename', 'RMDex.exe'),
+      StringStruct('ProductName', 'RMDex'),
       StringStruct('ProductVersion', '%(v)s')])]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]

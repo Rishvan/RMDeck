@@ -7,11 +7,11 @@ from PyInstaller.utils.hooks import collect_all
 ROOT = os.path.dirname(SPECPATH)
 
 datas, binaries, hiddenimports = collect_all("pyaudiowpatch")
-datas += [(os.path.join(ROOT, "assets", "rmdeck_icon.png"), "assets")]  # app logo
+datas += [(os.path.join(ROOT, "assets", "rmdex_icon.png"), "assets")]  # app logo
 hiddenimports += ["pystray._win32", "comtypes.stream", "PIL._tkinter_finder"]
 
 a = Analysis(
-    [os.path.join(ROOT, "rmdeck.py")],
+    [os.path.join(ROOT, "rmdex.py")],
     pathex=[ROOT],
     binaries=binaries,
     datas=datas,
@@ -26,11 +26,11 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="RMDeck",
+    name="RMDex",
     console=False,
     icon=os.path.join(SPECPATH, "app.ico"),
     version=os.path.join(SPECPATH, "version_info.txt"),
     upx=False,
 )
 
-coll = COLLECT(exe, a.binaries, a.datas, name="RMDeck", upx=False)
+coll = COLLECT(exe, a.binaries, a.datas, name="RMDex", upx=False)
