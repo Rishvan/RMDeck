@@ -113,5 +113,5 @@ img = Image.alpha_composite(img, badge_layer)
 draw = ImageDraw.Draw(img)
 draw.text((badge_x + badge_pad_x, badge_y + badge_pad_y - 2), badge_text, font=font_small, fill=(255, 255, 255))
 
-img.convert("RGB").save("public/og-image.png", format="JPEG", quality=85, optimize=True, progressive=True)
+img.convert("RGB").save("public/og-image.jpg", format="JPEG", quality=85, optimize=True, progressive=True)
 print("saved", img.size)
